@@ -13,5 +13,8 @@ for i in range(1, item_count+1):
     parts = line.split()
     items.append(Item(i-1, int(parts[0]), int(parts[1])))
 
-_, _, visiting_order = solve_branch_and_bound_DFS(capacity, items, True)
+value, taken, visiting_order = solve_branch_and_bound_DFS(capacity, items, True)
+
 print(visiting_order)
+print(value)
+print(taken)

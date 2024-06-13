@@ -23,17 +23,19 @@ def solve_branch_and_bound_DFS(capacity, items, record_visiting_order = False):
 
     visiting_order = []
 
+    best = 0
+    taken = []
+
     # 1) Creamos el nodo raiz (en este VPL todavía no utilizamos los
     #    parámetros taken, value, room, con lo que se inicializan con
     #    lista vacía y 0). El único valor necesario en el nodo es el
     #    indice al primer elemento de la lista (index = 0).
     # ...
-    node = Node(0, [], 0, 10)
+    node = Node(0, [], 0, capacity)
 
     # Lo añadimos a la lista de nodos vivos (alive)
     # ...
-    alive.append(node
-                 )
+    alive.append(node)
 
     # Mientras haya nodos en la lista de nodos vivos
     # ...
@@ -46,6 +48,12 @@ def solve_branch_and_bound_DFS(capacity, items, record_visiting_order = False):
         if record_visiting_order:
             visiting_order.append(current.index)
 
+        if current.room < 0 or current.estimate(items) < best:
+            continue
+
+        if current.value > best:
+            best = current.value
+            taken = current.taken
         # Si no hemos llegado al final del árbol
         #    1) Ramificamos (branch) por la derecha (append)
         #    2) Ramificamos (branch) por la izquierda (append)
@@ -53,6 +61,6 @@ def solve_branch_and_bound_DFS(capacity, items, record_visiting_order = False):
         if current.index == len(items):
             continue
         alive.append(Node(current.index + 1, current.taken, current.value, current.room))
-        alive.append(Node(current.index + 1, current.taken + [current.index], current.value + items[current.index].value, current.room - items[current.index].weight))
+        alive.append(Node(current.index + 1, current.taken + [current.index + 1], current.value + items[current.index].value, current.room - items[current.index].weight))
 
-    return 0, [], visiting_order
+    return best, taken, visiting_order
