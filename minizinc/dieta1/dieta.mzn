@@ -17,10 +17,25 @@ int: max_special_foods;       % Máximo de comidas especiales que podemos utiliz
 array[FEATURE] of var int: main;
 array[FEATURE] of var int: side;
 array[FEATURE] of var int: dessert;
-var int: budget;
+var int: budget = main[cost] + side[cost] + dessert[cost];
 
+constraint table(main, dd);
+constraint table(side, dd);
+constraint table(dessert, dd);
+
+constraint main[name] in mains;
+constraint side[name] in sides;
+constraint dessert[name] in desserts;
+
+constraint main[energy] + side[energy] + dessert[energy] >= min_energy;
+constraint main[protein] + side[protein] + dessert[protein] >= min_protein;
+constraint main[salt] + side[salt] + dessert[salt] <= max_salt;
+constraint main[fat] + side[fat] + dessert[fat] <= max_fat;
+
+constraint (main[name] in special_foods) + (side[name] in special_foods) + (dessert[name] in special_foods) <= max_special_foods;
 output ["main = ", show(to_enum(FOOD,main[name])),
         ", side = ", show(to_enum(FOOD,side[name])),
         ", dessert = ", show(to_enum(FOOD,dessert[name])),
         ", cost = ", show(budget), "\n"];
 
+solve minimize budget;
